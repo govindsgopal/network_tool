@@ -1,5 +1,6 @@
 import os
 interface_lst = []
+arp_cache_lst = []
 def menu():
 	print("1.Assign ip address")
 	print("2.Delete IP address")
@@ -12,7 +13,8 @@ def menu():
 	print("9.Restart network")
 	print("10.Change host name")
 	print("11.Add DNS server entry")
-	print("12.Exit")
+	print("12.Check arp entry")
+	print("13.Exit")
 
 def ip_assign():
 	ip = input('\tEnter ip address to add on interface \t ')
@@ -74,16 +76,17 @@ def switch_interface():
 def add_arp():
 	ip = input('Enter ip address  : ')
 	display_interface()
+	mac = input("Enter the mac address")
 	interface = input("Enter your choice of interface :")
-	arp_cache = os.popen('ip n show | cut -d " " -f5').read()
-	command = f'ip n add {ip} lladdr {arp_cache} dev {interface} nud permanent'
+	command = f'ip n add {ip} lladdr {mac} dev {interface} nud permanent'
 	res = os.popen(command).read()
 	print("\t\tARP ENTRY added succesfully!!")
 def delete_arp():
+	arp = os.popen('ip n show' ).read()
+	print(arp)
 	ip = input("Enter ip address  : ")
 	display_interface()
 	interface = input("Enter your choice of interface :  ")
-	arp_cache = os.popen('ip n show | cut -d " " -f5').read()
 	command = f'ip n del {ip} dev {interface}'
 	res = os.popen(command).read()
 	print("\t\tARP Entry deleted successfully")
@@ -101,6 +104,9 @@ def change_host_name():
 def add_DNS_entry():
 	 print('adding dns server.....')
 	 pass
+def check_arp():
+	res = os.popen('ip n show').read()
+	print(res)
 while True:
 	menu()
 	ch = input("Enter the choice\t")
@@ -128,6 +134,8 @@ while True:
 	elif ch == '11':
 		add_DNS_entry()
 	elif ch == '12':
+		check_arp()
+	elif ch == '13':
 		break
 	else:
 		print("Invalid input, try again!")
